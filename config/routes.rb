@@ -6,5 +6,12 @@ Rails.application.routes.draw do
   	resource :favorites, only: [:create, :destroy]
    resources :book_comments, only: [:create, :destroy]
   end
-  resources :users, only: [:show, :edit, :update, :destroy, :index, :new]
+  resources :users, only: [:show, :edit, :update, :destroy, :index, :new] do
+    member do
+     get :following, :followers
+    end
+  end
+
+  post 'create/:id' => 'relationships#create', as: 'follow' # フォローする
+  post 'destroy/:id' => 'relationships#destroy', as: 'unfollow' # フォロー外す
 end
