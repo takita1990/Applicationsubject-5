@@ -18,19 +18,35 @@ has_many :follower_user, through: :followed, source: :follower # 自分をフォ
   validates :name, presence: true
   validates :introduction, length: {maximum: 50}
 
-  # ユーザーをフォローする
-def follow(user_id)
-  follower.create(followed_id: user_id)
-end
+    # ユーザーをフォローする
+  def follow(user_id)
+    follower.create(followed_id: user_id)
+  end
 
-# ユーザーのフォローを外す
-def unfollow(user_id)
-  follower.find_by(followed_id: user_id).destroy
-end
+  # ユーザーのフォローを外す
+  def unfollow(user_id)
+    follower.find_by(followed_id: user_id).destroy
+  end
 
-# フォローしていればtrueを返す
-def following?(user)
-  following_user.include?(user)
-end
+  # フォローしていればtrueを返す
+  def following?(user)
+    following_user.include?(user)
+  end
+
+
+  def self.search(search,word)
+        if search == "forward_match"
+                        @user = User.where("name LIKE?","#{word}%")
+        elsif search == "backward_match"
+                        @user = User.where("name LIKE?","%#{word}")
+        elsif search == "perfect_match"
+                        @user = User.where("#{word}")
+        elsif search == "partial_match"
+                        @user = User.where("name LIKE?","%#{word}%")
+        else
+                        @user = User.all
+           end
+  end
+
 
 end
